@@ -1,7 +1,6 @@
-const appError = require("../utils/appError.js");
-const httpStatus = require("../utils/httpStatus.js");
+import { httpStatus } from "../utils/httpStatus.js";
 
-const asyncWrapper = (asyncFn) => {
+export const asyncWrapper = (asyncFn)=>{
     return (req,res,next) => {
         asyncFn(req,res,next).catch((err) => {
             err.statusCode = 500;
@@ -10,4 +9,3 @@ const asyncWrapper = (asyncFn) => {
         })
     }
 }
-module.exports = asyncWrapper;

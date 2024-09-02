@@ -1,6 +1,6 @@
 import { httpStatus } from "./httpStatus.js"
 
-const httpResp = {
+export const httpResp = {
     // for success res
     success : (resource = null) => {
         return {
@@ -35,5 +35,3 @@ const httpResp = {
     },
     
 }
-
-module.exports = httpResp;

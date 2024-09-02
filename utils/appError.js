@@ -10,4 +10,4 @@ class AppError extends Error{
     }
 }
 
-module.exports = new AppError;
+export const _AppError = new AppError;
