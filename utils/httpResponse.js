@@ -9,10 +9,12 @@ export const httpResp = {
         }
     },
     
-    error : (message = null) => {
+    error : (msg = null) => {
+        const { message, data } = handleValidationErrorResp(msg);
+        // return
         return {
             status : httpStatus.ERROR,
-            data: null,
+            data,
             message
         }
     },
@@ -26,12 +28,26 @@ export const httpResp = {
         }
     },
 
-    paginated : (resource = null) => {
-        return
+    paginated : (resource = null,paginate_data = {}) => {
         return {
             status : httpStatus.SUCCESS,
             data: {resource},
+            ...paginate_data
         }
     },
     
+}
+
+const handleValidationErrorResp = (message = []) => {
+    if(typeof message == 'string'){
+        return { message,data:null}
+    }
+    if(typeof message == 'object' && !Array.isArray(message)){
+        return {message:message.msg,data:[message]}
+    }
+    return {
+        message: message[0].msg,
+        data:message
+    }
+
 }
