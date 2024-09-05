@@ -19,11 +19,19 @@ export class ValidationService {
     minLength = (field,min) => {
         return body(field).isLength({min}).withMessage(`[${field}] must be at least [${min}] characters long.`)
     }
-
+    
     maxLength = (field,max) => {
         return body(field).isLength({max}).withMessage(`[${field}] must be less than or equal to [${max}]`)
     }
 
+    min = (field,min) => {
+        return body(field).isInt({min}).withMessage(`[${field}] must be at least [${min}].`)
+    }
+
+    max = (field,max) => {
+        return body(field).isInt({max}).withMessage(`[${field}] must be less than or equal to [${min}].`)
+    }
+    
     isOptional = (...fields) => {
         let validationsMiddleFn = [];
         for (let index = 0; index < fields.length; index++) {

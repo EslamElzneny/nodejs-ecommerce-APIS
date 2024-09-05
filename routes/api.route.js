@@ -6,6 +6,7 @@ import { categoryRouter } from './categories.route.js';
 import { productRouter } from './products.route.js';
 import { wishlistRouter } from './wishlist.route.js';
 import { addressRouter } from './addresses.route.js';
+import { cartRouter } from './cart.route.js';
 export const apiRouter = express.Router();
 
 apiRouter.use('/',authRouter);
@@ -14,6 +15,7 @@ apiRouter.use('/categories',categoryRouter);
 apiRouter.use('/products',productRouter);
 apiRouter.use('/wishlist',wishlistRouter);
 apiRouter.use('/addresses',addressRouter);
+apiRouter.use('/carts',cartRouter);
 
 // global middleware for not found api
 apiRouter.all('*',(req,res)=>{
