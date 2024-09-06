@@ -12,19 +12,20 @@ export class HandlersFactory {
 
     getAll = asyncWrapper(
         async (req,res,next) => {
-            const data = await this.Model.find();
+            const filterObj = req.filterObj || {};
+            const data = await this.Model.find(filterObj);
             res.json(httpResp.success(data));
         }
     );
 
     getAllByPaginate = asyncWrapper(
         async (req,res,next) => {
-            const _query = req._query_obj || {};
+            const filterObj = req.filterObj || {};
             const limit = req.query.limit || 10;
             const page = req.query.page || 1;
             const skip = (page - 1) * limit;
-            const total = await this.Model.countDocuments(_query);
-            const data = await this.Model.find(_query).limit(limit).skip(skip);
+            const total = await this.Model.countDocuments(filterObj);
+            const data = await this.Model.find(filterObj).limit(limit).skip(skip);
             res.json(httpResp.paginated(data,{current_page:page,per_page:limit,total}));
         }
     );
@@ -32,7 +33,8 @@ export class HandlersFactory {
 
     getOne = asyncWrapper(
         async (req,res,next)=>{
-            const data = await this.Model.findOne({_id:req.params.id});
+            const filterObj = req.filterObj || {};
+            const data = await this.Model.findOne({_id:req.params.id,...filterObj});
             if(!data){
                 const error = _AppError.create(`${this.modelName} Not Found`,404,httpStatus.FAIL)
                 next(error);

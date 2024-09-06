@@ -8,11 +8,11 @@ export const addressRouter = express.Router();
 
 addressRouter.use(authMiddleware);
 addressRouter.route('/')
-        .get(_AddressesControllers.setRequest,_AddressesControllers.index)
+        .get(_AddressesControllers.filterAddressForLoggedUser,_AddressesControllers.index)
         .post(
                 createAddressValidationReqSchema,
                 handleValidateErrorReq,
-                _AddressesControllers.setRequest,
+                _AddressesControllers.filterAddressForLoggedUser,
                 _AddressesControllers.store
         );
 

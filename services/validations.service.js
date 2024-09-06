@@ -32,6 +32,10 @@ export class ValidationService {
         return body(field).isInt({max}).withMessage(`[${field}] must be less than or equal to [${min}].`)
     }
     
+    isIn = (field,options) => {
+        return body(field).isIn(options).withMessage(`[${field}] must be either [${options.join(", ")}].`)
+    }
+
     isOptional = (...fields) => {
         let validationsMiddleFn = [];
         for (let index = 0; index < fields.length; index++) {

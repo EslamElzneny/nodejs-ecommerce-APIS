@@ -1,6 +1,7 @@
 import { Wishlist } from "../models/Wishlist.model.js";
 import { HandlersFactory } from "../services/handlersFactory.js";
 import { _AppError } from "../utils/appError.js";
+import { UserRole } from "../utils/enums/userRole.enum.js";
 import { httpResp } from "../utils/httpResponse.js";
 
 const _db = new HandlersFactory(Wishlist);
@@ -24,10 +25,8 @@ class WishlistControllers {
         next();
     }
 
-    addQueryInGetRequestObject = (req,res,next) => {
-        req._query_obj = {
-            user:req.user._id
-        };
+    filterWishlistForLoggedUser = (req,res,next) => {
+        if (req.user.role === UserRole.USER) req.filterObj = { user: req.user._id };
         next();
     }
 

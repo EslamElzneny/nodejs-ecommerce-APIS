@@ -7,7 +7,7 @@ export const wishlistRouter = express.Router();
 
 wishlistRouter.use(authMiddleware);
 wishlistRouter.route('/')
-        .get(_WishlistControllers.addQueryInGetRequestObject,_WishlistControllers.index)
+        .get(_WishlistControllers.filterWishlistForLoggedUser,_WishlistControllers.index)
         .post(
                 createWishlistValidationReqSchema,
                 handleValidateErrorReq,

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum: Object.keys(UserRole),
+        enum: UserRole.ENUM,
         default: UserRole.DEFAULT
     },
     created_at:{
