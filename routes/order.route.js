@@ -6,7 +6,10 @@ import { createOrderValidationReqSchema } from '../validations/orders/createOrde
 import { _OrderControllers } from '../controllers/order.controller.js';
 import { _OrderService } from '../services/order.service.js';
 import { updateStatusOrderValidationReqSchema } from '../validations/orders/updateOrderRequest.js';
+import { permissionsMiddleware } from '../middlewares/permissions.middleware.js';
+import { Order } from '../models/Order.model.js';
 export const orderRouter = express.Router();
+const modelName = Order.modelName;
 
 orderRouter.use(authMiddleware);
 orderRouter.route('/').get(_OrderControllers.index);
@@ -19,11 +22,12 @@ orderRouter.route('/:cartId').post(
 
 orderRouter.route('/:id').get(_OrderControllers.show);
 orderRouter.route('/:id/updateStatus').patch(
+        permissionsMiddleware(modelName),
         updateStatusOrderValidationReqSchema,
         handleValidateErrorReq,
         _OrderControllers.updateOrderStatus
 );
-orderRouter.route('/:id/paid').patch(_OrderControllers.updateOrderToPaid);
+orderRouter.route('/:id/paid').patch(permissionsMiddleware(modelName),_OrderControllers.updateOrderToPaid);
         // .delete(
         //         _CartControllers.removeSpecificCartItem
         // );

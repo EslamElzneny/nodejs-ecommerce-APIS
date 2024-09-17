@@ -2,25 +2,33 @@ import express from 'express';
 import { _UsersControllers } from '../controllers/users.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { permissionsMiddleware } from '../middlewares/permissions.middleware.js';
-import { UserRole } from '../utils/enums/userRole.enum.js';
 import { handleValidateErrorReq } from '../middlewares/handleValidateErrorReq.middleware.js';
 import { updateUserValidationReqSchema } from '../validations/users/updateUserRequest.js';
+import { User } from '../models/User.model.js';
 export const userRouter = express.Router();
+const modelName = User.modelName;
 
 userRouter.use('/',authMiddleware);
 userRouter.route('/')
-        .get(_UsersControllers.index);
+        .get(
+                permissionsMiddleware(modelName),
+                _UsersControllers.index
+        );
 
 userRouter.route('/:id')
-        .get(_UsersControllers.show)
+        .get(
+                permissionsMiddleware(modelName),
+                _UsersControllers.show
+        )
         .patch
         (
+                permissionsMiddleware(modelName),
                 updateUserValidationReqSchema,
                 handleValidateErrorReq,      
                 _UsersControllers.update
         )
         .delete
         (
-                permissionsMiddleware(UserRole.ADMIN),
+                permissionsMiddleware(modelName),
                 _UsersControllers.destroy
         );

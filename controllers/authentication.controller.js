@@ -11,7 +11,7 @@ class Authentication {
 
     register = asyncWrapper(
         async (req,res,next) => {
-            const { name , email , password } = req.body;
+            const { name , email , password , ruleId } = req.body;
 
             const existUser = await User.findOne({email});
 
@@ -26,12 +26,13 @@ class Authentication {
             let user = new User({
                 name,
                 email,
+                role:ruleId,
                 password: password_hashed,
                 created_at: new Date(),
             });
 
             // generate jwt token
-            const token = await generateJWT({email,name,_id:user._id,role:user.role});
+            const token = await generateJWT({email,name,_id:user._id,roleId:user.role._id});
             user.token = token;
 
             await user.save()
@@ -57,7 +58,7 @@ class Authentication {
                 return next(error);
             }
 
-            const token = await generateJWT({email,_id:user._id,name:user.name,role:user.role});
+            const token = await generateJWT({email,_id:user._id,name:user.name,roleId:user.role._id});
             user.token = token;
 
             await user.save();

@@ -1,17 +1,12 @@
 import 'dotenv/config'
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { apiRouter } from './routes/api.route.js';
+import { DB_connection } from './config/database.js';
 const app = express();
-
-const url = process.env.MONGO_DB_HOST + process.env.MONGO_DB_NAME;
-
-mongoose.connect(url).then(()=>{
-    console.log("Connected successfully to server...");
-})
+DB_connection()
 
 // Get the current filename and directory name
 const __filename = fileURLToPath(import.meta.url);

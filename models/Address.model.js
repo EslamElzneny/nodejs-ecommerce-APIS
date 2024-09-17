@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const addressSchema = new mongoose.Schema({
     address:{
         type:String,
-        required:[true,'Address is required!']
+        required:[true,'Address is required!'],
+        searchable:true
     },
     country:{
         type:String,

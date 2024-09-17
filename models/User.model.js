@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import { UserRole } from "../utils/enums/userRole.enum.js";
 
 const userSchema = new mongoose.Schema({
     name:{
         type: String,
-        required:true    
+        required:true,
+        searchable:true
     },
     email:{
         type: String,
         required:true,
         unique:true,
-        validate:[validator.isEmail,'Email must be valid']
+        validate:[validator.isEmail,'Email must be valid'],
+        searchable:true
     },
     password:{
         type:String,
@@ -22,14 +23,15 @@ const userSchema = new mongoose.Schema({
         required:false
     },
     role:{
-        type:String,
-        enum: UserRole.ENUM,
-        default: UserRole.DEFAULT
-    },
-    created_at:{
-        type:Date,
-        required:false
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Role'
     }
+},{timestamps:true});
+
+userSchema.pre(['findOne'],function(next){
+    this.populate([{path:'role'}]);
+    next();
 });
+
 
 export const User = mongoose.model('User',userSchema);

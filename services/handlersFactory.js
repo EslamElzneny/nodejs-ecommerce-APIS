@@ -1,4 +1,5 @@
 import { asyncWrapper } from "../middlewares/asyncWrapper.js";
+import { User } from "../models/User.model.js";
 import { _AppError } from "../utils/appError.js";
 import { httpResp } from "../utils/httpResponse.js";
 
@@ -20,12 +21,13 @@ export class HandlersFactory {
 
     getAllByPaginate = asyncWrapper(
         async (req,res,next) => {
-            const filterObj = req.filterObj || {};
+            let filterObj = req.filterObj || {};
+            filterObj = {...filterObj,...this.setQueryVal(req.query)}
             const limit = req.query.limit || 10;
             const page = req.query.page || 1;
             const skip = (page - 1) * limit;
             const total = await this.Model.countDocuments(filterObj);
-            const data = await this.Model.find(filterObj).limit(limit).skip(skip);
+            const data = await this.Model.find({...filterObj}).limit(limit).skip(skip);
             res.json(httpResp.paginated(data,{current_page:page,per_page:limit,total}));
         }
     );
@@ -63,7 +65,25 @@ export class HandlersFactory {
             const doc = await this.Model.deleteOne({_id:req.params.id})
             return res.json(httpResp.success(doc))
         }
-    );    
+    );
+
+    setQueryVal = (query) =>{
+        if(query.search){
+            let searchable_fields = [];
+            for (let field in this.Model.schema.obj) {
+                if(this.Model.schema.obj[field].searchable){
+                    searchable_fields.push({
+                        [field]: { $regex: query.search, $options: 'i' }
+                    });
+                }
+            }
+            query['$or'] = searchable_fields; 
+        }
+        delete query['search']
+
+        return query;
+
+    }
 
 
 }
